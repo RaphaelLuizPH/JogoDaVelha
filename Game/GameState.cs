@@ -143,7 +143,7 @@ namespace JogoDaVelha.Game
         }
 
 
-        public Jogada(int linha, int coluna)
+        public void Jogada(int linha, int coluna)
         {
             if (!JogadaValida(linha, coluna)) return;
 
@@ -159,13 +159,11 @@ namespace JogoDaVelha.Game
                 FimJogo?.Invoke(resultado);
             } else
             {
-                AçãoJogada?.Invoke(linha, coluna);
-
                 TrocaJogador();
-
+                AçãoJogada?.Invoke(linha, coluna);
             }
 
-                
+
         }
 
 
@@ -180,3 +178,4 @@ namespace JogoDaVelha.Game
 
     }
 }
+  

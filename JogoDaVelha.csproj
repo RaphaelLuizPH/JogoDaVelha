@@ -9,7 +9,77 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Arquivos\" />
+    <None Remove="Arquivos\Grid.png" />
+    <None Remove="Arquivos\Icon.ico" />
+    <None Remove="Arquivos\O0.png" />
+    <None Remove="Arquivos\O1.png" />
+    <None Remove="Arquivos\O10.png" />
+    <None Remove="Arquivos\O11.png" />
+    <None Remove="Arquivos\O12.png" />
+    <None Remove="Arquivos\O13.png" />
+    <None Remove="Arquivos\O14.png" />
+    <None Remove="Arquivos\O15.png" />
+    <None Remove="Arquivos\O2.png" />
+    <None Remove="Arquivos\O3.png" />
+    <None Remove="Arquivos\O4.png" />
+    <None Remove="Arquivos\O5.png" />
+    <None Remove="Arquivos\O6.png" />
+    <None Remove="Arquivos\O7.png" />
+    <None Remove="Arquivos\O8.png" />
+    <None Remove="Arquivos\O9.png" />
+    <None Remove="Arquivos\X0.png" />
+    <None Remove="Arquivos\X1.png" />
+    <None Remove="Arquivos\X10.png" />
+    <None Remove="Arquivos\X11.png" />
+    <None Remove="Arquivos\X12.png" />
+    <None Remove="Arquivos\X13.png" />
+    <None Remove="Arquivos\X14.png" />
+    <None Remove="Arquivos\X15.png" />
+    <None Remove="Arquivos\X2.png" />
+    <None Remove="Arquivos\X3.png" />
+    <None Remove="Arquivos\X4.png" />
+    <None Remove="Arquivos\X5.png" />
+    <None Remove="Arquivos\X6.png" />
+    <None Remove="Arquivos\X7.png" />
+    <None Remove="Arquivos\X8.png" />
+    <None Remove="Arquivos\X9.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Arquivos\Grid.png" />
+    <Resource Include="Arquivos\Icon.ico" />
+    <Resource Include="Arquivos\O0.png" />
+    <Resource Include="Arquivos\O1.png" />
+    <Resource Include="Arquivos\O10.png" />
+    <Resource Include="Arquivos\O11.png" />
+    <Resource Include="Arquivos\O12.png" />
+    <Resource Include="Arquivos\O13.png" />
+    <Resource Include="Arquivos\O14.png" />
+    <Resource Include="Arquivos\O15.png" />
+    <Resource Include="Arquivos\O2.png" />
+    <Resource Include="Arquivos\O3.png" />
+    <Resource Include="Arquivos\O4.png" />
+    <Resource Include="Arquivos\O5.png" />
+    <Resource Include="Arquivos\O6.png" />
+    <Resource Include="Arquivos\O7.png" />
+    <Resource Include="Arquivos\O8.png" />
+    <Resource Include="Arquivos\O9.png" />
+    <Resource Include="Arquivos\X0.png" />
+    <Resource Include="Arquivos\X1.png" />
+    <Resource Include="Arquivos\X10.png" />
+    <Resource Include="Arquivos\X11.png" />
+    <Resource Include="Arquivos\X12.png" />
+    <Resource Include="Arquivos\X13.png" />
+    <Resource Include="Arquivos\X14.png" />
+    <Resource Include="Arquivos\X15.png" />
+    <Resource Include="Arquivos\X2.png" />
+    <Resource Include="Arquivos\X3.png" />
+    <Resource Include="Arquivos\X4.png" />
+    <Resource Include="Arquivos\X5.png" />
+    <Resource Include="Arquivos\X6.png" />
+    <Resource Include="Arquivos\X7.png" />
+    <Resource Include="Arquivos\X8.png" />
+    <Resource Include="Arquivos\X9.png" />
   </ItemGroup>
 
 </Project>
