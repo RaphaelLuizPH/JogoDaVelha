@@ -356,6 +356,9 @@ namespace JogoDaVelha
             await _semaphore.WaitAsync();
             Thread.Sleep(1000);
 
+            List<Tuple<int, int>> jogadasPossiveis = new List<Tuple<int, int>>();
+
+
             try
             {
                 Tuple<int, int>? JogadaCritica = null;
@@ -368,10 +371,7 @@ namespace JogoDaVelha
                     {
                         (int linhas, int colunas) = JogadaCritica;
 
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            _gameState.Jogada(linhas, colunas);
-                        });
+                        jogadasPossiveis.Add(new Tuple<int, int>(linhas, colunas));
 
 
                     }
@@ -381,10 +381,6 @@ namespace JogoDaVelha
                 thread3.Start();
                 thread3.Join();
 
-                if (JogadaCritica != null)
-                {
-                    return;
-                }
 
                 Tuple<int, int>? melhorJogada = null;
 
@@ -421,19 +417,39 @@ namespace JogoDaVelha
                         }
                     }
 
+                   if (melhorJogada != null)
+                    {
+                        jogadasPossiveis.Add(melhorJogada);
 
-                    if (melhorJogada != null)
+                      
+                    }
+
+                    if (jogadasPossiveis.Count == 0)
+                    {
+                        return;
+                    } else
+                    {
+                        Random random = new Random();
+                        int index = random.Next(jogadasPossiveis.Count);
+                        melhorJogada = jogadasPossiveis[index];
+                    }
+
+
+                    thread2 = new Thread(() =>
                     {
                         (int l, int c) = melhorJogada;
                         Application.Current.Dispatcher.Invoke(() =>
                         {
                             _gameState.Jogada(l, c);
                         });
-                    }
+                    });
+                    
+
                 });
 
                 thread4.Start();
                 thread4.Join();
+                thread2.Start();
             }
             finally
             {
