@@ -1,10 +1,5 @@
 ﻿using JogoDaVelha.Classes;
 using JogoDaVelha.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace JogoDaVelha.Game
 {
@@ -12,9 +7,14 @@ namespace JogoDaVelha.Game
     {
         public Player[,] TabelaJogo { get; private set; }
 
-        public Player JogadorAtual { get; set; } 
+        public Player JogadorAtual { get; set; }
 
         public int Turnos { get; set; }
+
+        public int ScoreX { get; set; } = 0;
+
+        public int ScoreO { get; set; } = 0;
+
 
         public bool JogoEmAndamento { get; set; }
 
@@ -29,25 +29,26 @@ namespace JogoDaVelha.Game
             JogadorAtual = Player.X;
             Turnos = 0;
             JogoEmAndamento = true;
+
         }
 
-        private bool JogadaValida(int linha, int coluna)
+        public bool JogadaValida(int linha, int coluna)
         {
-            if (!JogoEmAndamento) return false; 
+            if (!JogoEmAndamento) return false;
 
-            if(TabelaJogo[linha, coluna] != Player.Nenhum) return false;
-            
+            if (TabelaJogo[linha, coluna] != Player.Nenhum) return false;
+
 
             return true;
         }
 
-        private bool TabelaCheia()
+        public bool TabelaCheia()
         {
             if (Turnos == 9) return true;
             return false;
         }
 
-        private void TrocaJogador()
+        public void TrocaJogador()
         {
             JogadorAtual = JogadorAtual == Player.X ? Player.O : Player.X;
         }
@@ -55,7 +56,7 @@ namespace JogoDaVelha.Game
 
         private bool VerificaGanhador((int, int)[] squares, Player player)
         {
-            foreach((int linha, int coluna) in squares)
+            foreach ((int linha, int coluna) in squares)
             {
                 if (TabelaJogo[linha, coluna] != player)
                 {
@@ -73,7 +74,8 @@ namespace JogoDaVelha.Game
             (int, int)[] diag = new[] { (0, 0), (1, 1), (2, 2) };
             (int, int)[] diag2 = new[] { (0, 2), (1, 1), (2, 0) };
 
-            if(VerificaGanhador(l, JogadorAtual)) {
+            if (VerificaGanhador(l, JogadorAtual))
+            {
                 info = new WinInfo()
                 {
                     TipoVitória = WinType.Linha,
@@ -82,7 +84,8 @@ namespace JogoDaVelha.Game
                 return true;
             }
 
-            if(VerificaGanhador(c, JogadorAtual)) {
+            if (VerificaGanhador(c, JogadorAtual))
+            {
                 info = new WinInfo()
                 {
                     TipoVitória = WinType.Coluna,
@@ -91,7 +94,8 @@ namespace JogoDaVelha.Game
                 return true;
             }
 
-            if (VerificaGanhador(diag, JogadorAtual)) {
+            if (VerificaGanhador(diag, JogadorAtual))
+            {
                 info = new WinInfo()
                 {
                     TipoVitória = WinType.Diagonal,
@@ -100,7 +104,8 @@ namespace JogoDaVelha.Game
                 return true;
             }
 
-            if (VerificaGanhador(diag2, JogadorAtual)) {
+            if (VerificaGanhador(diag2, JogadorAtual))
+            {
                 info = new WinInfo()
                 {
                     TipoVitória = WinType.AntiDiagonal,
@@ -117,18 +122,18 @@ namespace JogoDaVelha.Game
 
         public bool JogadaFinal(int linha, int coluna, out GameResult resultado)
         {
-            if(JogadaVencedora(linha, coluna, out WinInfo info))
+            if (JogadaVencedora(linha, coluna, out WinInfo info))
             {
                 resultado = new GameResult()
                 {
                     Ganhador = JogadorAtual,
                     Info = info
                 };
-                JogoEmAndamento = false;
+               
                 return true;
             }
 
-            if(TabelaCheia())
+            if (TabelaCheia())
             {
                 resultado = new GameResult()
                 {
@@ -150,14 +155,15 @@ namespace JogoDaVelha.Game
             TabelaJogo[linha, coluna] = JogadorAtual;
             Turnos++;
 
-            if(JogadaFinal(linha, coluna, out GameResult resultado))
+            if (JogadaFinal(linha, coluna, out GameResult resultado))
             {
                 JogoEmAndamento = false;
-                   
+
                 AçãoJogada?.Invoke(linha, coluna);
 
                 FimJogo?.Invoke(resultado);
-            } else
+            }
+            else
             {
                 TrocaJogador();
                 AçãoJogada?.Invoke(linha, coluna);
@@ -178,4 +184,3 @@ namespace JogoDaVelha.Game
 
     }
 }
-  
