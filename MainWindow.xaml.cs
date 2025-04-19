@@ -181,7 +181,7 @@ namespace JogoDaVelha
         {
 
             await MostrarLinha(resultado.Info);
-            await Task.Delay(2000);
+            await Task.Delay(1000);
 
 
             if (resultado.Ganhador == Player.Nenhum)
@@ -325,6 +325,13 @@ namespace JogoDaVelha
 
         private void Jogo_MouseDown(object sender, MouseButtonEventArgs e)
         {
+
+            
+
+            thread2 = new Thread(ProcessarJogadaAutomatica);
+
+          
+
             double squareWidth = GridJogo.Width / 3;
             Point posicao = e.GetPosition(GridJogo);
 
@@ -334,12 +341,14 @@ namespace JogoDaVelha
             if (_gameState.JogadorAtual == Player.X)
             {
                 _gameState.Jogada(linha, coluna);
+            } else
+            {
+                return;
             }
 
-            thread2 = new Thread(ProcessarJogadaAutomatica);
 
 
-            thread2.Start();
+                thread2.Start();
         }
 
         private async void ProcessarJogadaAutomatica()
