@@ -1,6 +1,7 @@
 ﻿using JogoDaVelha.Classes;
 using JogoDaVelha.Enums;
 using JogoDaVelha.Game;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -23,7 +24,7 @@ namespace JogoDaVelha
         private Thread thread2;
         private Thread thread3;
         private Thread thread4;
-
+        private Thread thread5;
         public MainWindow()
         {
             InitializeComponent();
@@ -94,7 +95,7 @@ namespace JogoDaVelha
                 _semaphore.Wait();
 
                 thread1 = new Thread(CriarQuadrosAnimacao);
-
+                thread1.Name = "ThreadCriarQuadrosAnimacao";
                 thread1.Start();
                 Thread.Yield();
 
@@ -326,29 +327,39 @@ namespace JogoDaVelha
         private void Jogo_MouseDown(object sender, MouseButtonEventArgs e)
         {
 
-            
-
-            thread2 = new Thread(ProcessarJogadaAutomatica);
-
-          
-
-            double squareWidth = GridJogo.Width / 3;
-            Point posicao = e.GetPosition(GridJogo);
-
-            int linha = (int)(posicao.Y / squareWidth);
-            int coluna = (int)(posicao.X / squareWidth);
-
-            if (_gameState.JogadorAtual == Player.X)
+            try
             {
-                _gameState.Jogada(linha, coluna);
-            } else
+                _semaphore.Wait();
+
+                thread2 = new Thread(ProcessarJogadaAutomatica);
+
+
+
+                double squareWidth = GridJogo.Width / 3;
+                Point posicao = e.GetPosition(GridJogo);
+
+                int linha = (int)(posicao.Y / squareWidth);
+                int coluna = (int)(posicao.X / squareWidth);
+
+                if (_gameState.JogadorAtual == Player.X)
+                {
+                    _gameState.Jogada(linha, coluna);
+                }
+                else
+                {
+                    return;
+                }
+
+                thread2.Name = "ThreadProcessarJogadaAutomatica";
+
+                thread2.Start();
+            }
+            finally
             {
-                return;
+                _semaphore.Release();
             }
 
 
-
-                thread2.Start();
         }
 
         private async void ProcessarJogadaAutomatica()
@@ -377,6 +388,7 @@ namespace JogoDaVelha
                     }
                 });
 
+                thread3.Name = "ThreadEncontrarJogadaCritica";
 
                 thread3.Start();
                 thread3.Join();
@@ -400,12 +412,12 @@ namespace JogoDaVelha
 
                                 int pontuacao = 0;
 
-                                thread1 = new Thread(() =>
-                                {
-                                    pontuacao = Minimax(_gameState.TabelaJogo, false);
-                                });
+
+                                pontuacao = Minimax(_gameState.TabelaJogo, false);
+
 
                                 _gameState.TabelaJogo[i, j] = Player.Nenhum;
+
 
 
                                 if (pontuacao > melhorPontuacao)
@@ -417,39 +429,51 @@ namespace JogoDaVelha
                         }
                     }
 
-                   if (melhorJogada != null)
+                    
+
+
+
+                    if (melhorJogada != null)
                     {
                         jogadasPossiveis.Add(melhorJogada);
 
-                      
+
                     }
+
+
+
+                });
+
+
+                thread5 = new Thread(() =>
+                {
 
                     if (jogadasPossiveis.Count == 0)
                     {
                         return;
-                    } else
+                    }
+                    else
                     {
                         Random random = new Random();
                         int index = random.Next(jogadasPossiveis.Count);
                         melhorJogada = jogadasPossiveis[index];
                     }
 
-
-                    thread2 = new Thread(() =>
+                    (int l, int c) = melhorJogada;
+                    Application.Current.Dispatcher.Invoke(() =>
                     {
-                        (int l, int c) = melhorJogada;
-                        Application.Current.Dispatcher.Invoke(() =>
-                        {
-                            _gameState.Jogada(l, c);
-                        });
+                        _gameState.Jogada(l, c);
                     });
-                    
-
                 });
 
+                thread4.Name = "ThreadAlgoritmoEscolhaJogada";
+                thread5.Name = "ThreadEscolherJogada";
+
                 thread4.Start();
+
                 thread4.Join();
-                thread2.Start();
+                thread5.Start();
+                thread5.Join();
             }
             finally
             {
