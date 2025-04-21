@@ -327,6 +327,7 @@ namespace JogoDaVelha
         private void Jogo_MouseDown(object sender, MouseButtonEventArgs e)
         {
 
+            
             try
             {
                 _semaphore.Wait();
@@ -335,14 +336,18 @@ namespace JogoDaVelha
 
 
 
-                double squareWidth = GridJogo.Width / 3;
-                Point posicao = e.GetPosition(GridJogo);
-
-                int linha = (int)(posicao.Y / squareWidth);
-                int coluna = (int)(posicao.X / squareWidth);
 
                 if (_gameState.JogadorAtual == Player.X)
                 {
+
+
+                    double squareWidth = GridJogo.Width / 3;
+                    Point posicao = e.GetPosition(GridJogo);
+
+                    int linha = (int)(posicao.Y / squareWidth);
+                    int coluna = (int)(posicao.X / squareWidth);
+
+
                     _gameState.Jogada(linha, coluna);
                 }
                 else
@@ -362,9 +367,9 @@ namespace JogoDaVelha
 
         }
 
-        private async void ProcessarJogadaAutomatica()
+        private  void ProcessarJogadaAutomatica()
         {
-            await _semaphore.WaitAsync();
+           
             Thread.Sleep(1000);
 
             List<Tuple<int, int>> jogadasPossiveis = new List<Tuple<int, int>>();
@@ -372,6 +377,8 @@ namespace JogoDaVelha
 
             try
             {
+                 _semaphore.Wait();
+
                 Tuple<int, int>? JogadaCritica = null;
 
                 thread3 = new Thread(() =>
@@ -391,7 +398,7 @@ namespace JogoDaVelha
                 thread3.Name = "ThreadEncontrarJogadaCritica";
 
                 thread3.Start();
-                thread3.Join();
+               
 
 
                 Tuple<int, int>? melhorJogada = null;
@@ -470,7 +477,6 @@ namespace JogoDaVelha
                 thread5.Name = "ThreadEscolherJogada";
 
                 thread4.Start();
-
                 thread4.Join();
                 thread5.Start();
                 thread5.Join();
