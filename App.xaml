@@ -4,8 +4,8 @@
              xmlns:local="clr-namespace:JogoDaVelha"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <SolidColorBrush x:Key="BackgroundColor" Color="#71797E"/>
-        <SolidColorBrush x:Key="ButtonColor" Color="#8A9A5B"/>
-        <SolidColorBrush x:Key="LineColor" Color="#C70039"/>
+        <SolidColorBrush x:Key="BackgroundColor" Color="#EFEFEF"/>
+        <SolidColorBrush x:Key="ButtonColor" Color="#EC7700"/>
+        <SolidColorBrush x:Key="LineColor" Color="#D65F00"/>
     </Application.Resources>
 </Application>

@@ -175,6 +175,8 @@ namespace JogoDaVelha.Game
 
         public void Recomeçar()
         {
+            
+            
             TabelaJogo = new Player[3, 3];
             JogadorAtual = Player.X;
             Turnos = 0;

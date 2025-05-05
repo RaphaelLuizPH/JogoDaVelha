@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
@@ -20,11 +21,15 @@ namespace JogoDaVelha
     public partial class MainWindow : Window
     {
         private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1, 1);
+
         private Thread thread1;
         private Thread thread2;
         private Thread thread3;
         private Thread thread4;
         private Thread thread5;
+
+
+
         public MainWindow()
         {
             InitializeComponent();
@@ -36,6 +41,16 @@ namespace JogoDaVelha
 
         }
 
+
+
+        private DropShadowEffect _shadowEffect = new DropShadowEffect
+        {
+            Color = Colors.Black, 
+            Direction = 320,      
+            ShadowDepth = 5,     
+            Opacity = 0.5,        
+            BlurRadius = 10       
+        };
 
 
         private readonly Dictionary<Player, ImageSource> _images = new()
@@ -86,6 +101,12 @@ namespace JogoDaVelha
             await Task.Delay(500);
 
         }
+
+
+
+
+
+
 
 
         private void CriarAnimação()
@@ -139,7 +160,13 @@ namespace JogoDaVelha
             {
                 for (int j = 0; j < 3; j++)
                 {
-                    Image controle = new Image();
+                    Image controle = new Image()
+                    {
+                        Width = GridJogo.Width / 3,
+                        Height = GridJogo.Height / 3,
+                        Stretch = Stretch.Uniform
+                    };
+
                     GridJogo.Children.Add(controle);
                     ControleImagem[i, j] = controle;
                 }
@@ -153,6 +180,7 @@ namespace JogoDaVelha
         {
             Player jogadorAtual = _gameState.TabelaJogo[linha, coluna];
             ControleImagem[linha, coluna].BeginAnimation(Image.SourceProperty, animação[jogadorAtual]);
+            ControleImagem[linha, coluna].Effect = _shadowEffect; 
             ImagemTurno.Source = _images[_gameState.JogadorAtual];
 
 
@@ -162,7 +190,7 @@ namespace JogoDaVelha
         private async Task MudarTelaFimDeJogo(string texto, ImageSource imagem)
         {
 
-            Resultado.Text = texto;
+            Application.Current.Dispatcher.Invoke(() => Resultado.Text = texto);
             ImagemVencedor.Source = imagem;
             await Task.Delay(1000);
             await Task.WhenAll(
@@ -181,8 +209,14 @@ namespace JogoDaVelha
         private async void FimJogo(GameResult resultado)
         {
 
-            await MostrarLinha(resultado.Info);
-            await Task.Delay(1000);
+           
+            if(resultado.Ganhador != Player.Nenhum)
+            {
+                await MostrarLinha(resultado.Info);
+                await Task.Delay(1000);
+            }
+            
+         
 
 
             if (resultado.Ganhador == Player.Nenhum)
@@ -372,7 +406,8 @@ namespace JogoDaVelha
            
             Thread.Sleep(1000);
 
-            List<Tuple<int, int>> jogadasPossiveis = new List<Tuple<int, int>>();
+            List<Tuple<int, int>> jogadasPossiveis = new List<Tuple<int, int>>(); 
+            List<Tuple<int, int>> jogadasCriticas = new List<Tuple<int, int>>();
 
 
             try
@@ -455,16 +490,35 @@ namespace JogoDaVelha
                 thread5 = new Thread(() =>
                 {
 
-                    if (jogadasPossiveis.Count == 0)
+
+                        if(jogadasPossiveis.Count == 0 && _gameState.TabelaCheia())
                     {
+                        
+
                         return;
                     }
-                    else
-                    {
+               
+
                         Random random = new Random();
-                        int index = random.Next(jogadasPossiveis.Count);
-                        melhorJogada = jogadasPossiveis[index];
-                    }
+                        int decision = random.Next(1, 10);
+                        int index = default;
+                        if (decision < 7)
+                        {
+                            index = random.Next(jogadasPossiveis.Count);
+                            melhorJogada = jogadasPossiveis[index];
+                        }
+                        else
+                        {
+                            index = random.Next(jogadasCriticas.Count);
+                            melhorJogada = jogadasPossiveis[index];
+                        }
+
+
+                    
+
+                  
+                    
+                   
 
                     (int l, int c) = melhorJogada;
                     Application.Current.Dispatcher.Invoke(() =>
@@ -616,6 +670,6 @@ namespace JogoDaVelha
             _gameState.Recomeçar();
         }
 
-
+        
     }
 }
